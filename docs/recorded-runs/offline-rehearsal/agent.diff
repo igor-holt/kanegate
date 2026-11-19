@@ -1,0 +1,24 @@
+diff --git a/public/cart.js b/public/cart.js
+index 69fc6c1..74d031d 100644
+--- a/public/cart.js
++++ b/public/cart.js
+@@ -10,8 +10,8 @@
+   function discount(sub, code) {
+     const c = COUPONS[String(code || '').trim().toUpperCase()];
+     if (!c) return 0;
+-    // 10% off the subtotal
+-    return c.value * 100;
++    if (c.type === 'percent') return Math.round(sub * c.value / 100);
++    return c.value;
+   }
+ 
+   function itemCount(qty) {
+@@ -19,7 +19,7 @@
+   }
+ 
+   function canCheckout(qty) {
+-    return itemCount(qty) > 1;
++    return itemCount(qty) > 0;
+   }
+ 
+   const money = (cents) => '$' + (cents / 100).toFixed(2);

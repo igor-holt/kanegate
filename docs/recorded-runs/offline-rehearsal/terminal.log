@@ -1,0 +1,43 @@
+
+kanegate · 2 flow(s) · up to 4 attempt(s) · agent: opencode · kane-cli 0.0.0-fake
+run dir: .kanegate/runs/2026-11-19_14-02-33
+
+▶ Attempt 1/4 — starting app at http://localhost:4173
+  kane coupon-total — Set the Widget quantity to 2 and the Gadget quantity to 1. Type SAVE10 into the Coupon code field and click A…
+    ✓ Set Widget quantity to 2
+    ✓ Set Gadget quantity to 1
+    ✓ Entered SAVE10 and clicked Apply; status shows "Coupon SAVE10 applied"
+    ✗ Order total shows $45.00; expected $49.50
+  FAIL coupon-total — Assertion failed: Order total is $45.00, expected $49.50 (0.081s)
+  kane single-item-checkout — Set the Widget quantity to 1 and leave the Gadget quantity at 0. Type buyer@example.com into the Email field …
+    ✓ Set Widget quantity to 1
+    ✓ Typed buyer@example.com into Email
+    ✓ Clicked Place order
+    ✗ Message shows "Your cart is empty."
+  FAIL single-item-checkout — Assertion failed: expected a message containing 'Order confirmed' but the page shows "Your cart is empty." (0.048s)
+
+⛔ Deploy blocked: 2 flow(s) failed.
+  agent opencode ← Kane failure report (2161 chars) .kanegate/runs/2026-11-19_14-02-33/attempt-1/agent-prompt.md
+  agent exit 0 in 73s · changed: public/cart.js
+
+▶ Attempt 2/4 — starting app at http://localhost:4173
+  kane coupon-total — Set the Widget quantity to 2 and the Gadget quantity to 1. Type SAVE10 into the Coupon code field and click A…
+    ✓ Set Widget quantity to 2
+    ✓ Set Gadget quantity to 1
+    ✓ Entered SAVE10 and clicked Apply; status shows "Coupon SAVE10 applied"
+    ✓ Order total shows $49.50; expected $49.50
+  PASS coupon-total (0.049s)
+  kane single-item-checkout — Set the Widget quantity to 1 and leave the Gadget quantity at 0. Type buyer@example.com into the Email field …
+    ✓ Set Widget quantity to 1
+    ✓ Typed buyer@example.com into Email
+    ✓ Clicked Place order
+    ✓ Message shows "Order confirmed: KG-XXXXXX — $20.00 charged to buyer@example.com."
+  PASS single-item-checkout (0.047s)
+
+✔ Kane signed off on all 2 flow(s).
+
+🚀 Deploying: node scripts/deploy.js
+  │ published 5 files to dist/ (run 2026-11-19_14-02-33)
+✔ Deployed.
+
+report: .kanegate/runs/2026-11-19_14-02-33/REPORT.md

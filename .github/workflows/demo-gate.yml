@@ -1,0 +1,19 @@
+# Example: block the demo app's deploy on Kane. Needs repo secrets KANE_USERNAME and KANE_ACCESS_KEY.
+name: kanegate demo
+on: [workflow_dispatch]
+jobs:
+  gate:
+    runs-on: ubuntu-latest   # ships Google Chrome stable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Unit tests (offline, Kane test double)
+        run: npm test
+      - name: Kane verifies the demo checkout
+        uses: ./
+        with:
+          command: check
+          working-directory: examples/checkout
+          kane-username: ${{ secrets.KANE_USERNAME }}
+          kane-access-key: ${{ secrets.KANE_ACCESS_KEY }}

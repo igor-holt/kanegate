@@ -1,0 +1,24 @@
+{
+  "maxIterations": 4,
+  "app": {
+    "start": "node server.js",
+    "url": "http://localhost:4173",
+    "readyTimeoutSec": 20
+  },
+  "flows": [
+    {
+      "name": "coupon-total",
+      "objective": "Set the Widget quantity to 2 and the Gadget quantity to 1. Type SAVE10 into the Coupon code field and click Apply. Verify the Order total shows $49.50."
+    },
+    {
+      "name": "single-item-checkout",
+      "objective": "Set the Widget quantity to 1 and leave the Gadget quantity at 0. Type buyer@example.com into the Email field and click Place order. Verify a message containing 'Order confirmed' is shown."
+    }
+  ],
+  "agent": {
+    "preset": "opencode"
+  },
+  "deploy": {
+    "command": "node scripts/deploy.js"
+  }
+}

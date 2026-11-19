@@ -1,0 +1,6 @@
+node_modules/
+.kanegate/
+.testmuai/
+examples/checkout/dist/
+.env
+*.evidence

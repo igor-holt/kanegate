@@ -1,0 +1,35 @@
+{
+  "name": "kanegate",
+  "version": "0.1.0",
+  "description": "An app that refuses to deploy until Kane CLI signs off. Your coding agent ships, Kane verifies in a real browser, failures go straight back to the agent, deploy runs only on green.",
+  "type": "module",
+  "bin": {
+    "kanegate": "bin/kanegate.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "action.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "demo": "cd examples/checkout && node scripts/reset-demo.js && node ../../bin/kanegate.js run",
+    "demo:check": "cd examples/checkout && node ../../bin/kanegate.js check",
+    "demo:reset": "cd examples/checkout && node scripts/reset-demo.js"
+  },
+  "keywords": [
+    "kane-cli",
+    "testmuai",
+    "ai-agent",
+    "deploy",
+    "e2e",
+    "opencode",
+    "ci"
+  ],
+  "license": "MIT"
+}

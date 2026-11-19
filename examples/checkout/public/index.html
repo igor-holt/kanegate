@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kart — kanegate demo checkout</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main>
+    <h1>Kart checkout</h1>
+    <p class="sub">Demo store for <code>kanegate</code>. Ships only when Kane says so.</p>
+
+    <section class="items" aria-label="Products">
+      <div class="item">
+        <span class="name">Widget</span><span class="price">$20.00</span>
+        <label>Qty <input id="qty-widget" name="qty-widget" type="number" min="0" value="0" aria-label="Widget quantity" /></label>
+      </div>
+      <div class="item">
+        <span class="name">Gadget</span><span class="price">$15.00</span>
+        <label>Qty <input id="qty-gadget" name="qty-gadget" type="number" min="0" value="0" aria-label="Gadget quantity" /></label>
+      </div>
+    </section>
+
+    <section class="coupon">
+      <label for="coupon">Coupon code</label>
+      <input id="coupon" name="coupon" placeholder="e.g. SAVE10" />
+      <button id="apply-coupon" type="button">Apply</button>
+      <span id="coupon-status" role="status"></span>
+    </section>
+
+    <section class="totals" aria-label="Totals">
+      <div>Subtotal: <span id="subtotal">$0.00</span></div>
+      <div>Discount: <span id="discount">-$0.00</span></div>
+      <div class="total">Order total: <span id="total">$0.00</span></div>
+    </section>
+
+    <section class="checkout">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="you@example.com" />
+      <button id="place-order" type="button">Place order</button>
+      <p id="message" role="alert"></p>
+    </section>
+  </main>
+  <script src="/cart.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

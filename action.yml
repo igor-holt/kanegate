@@ -1,0 +1,61 @@
+name: kanegate
+description: Refuse to deploy until Kane CLI signs off. Kane verifies your flows in a real browser; failures go back to your coding agent.
+branding: { icon: shield, color: blue }
+inputs:
+  command:
+    description: "`check` (verify only, fail the job on red) or `run` (agent fix loop, then deploy on green)"
+    default: check
+  working-directory:
+    description: Directory containing kanegate.config.json
+    default: .
+  config:
+    description: Config file path (relative to working-directory)
+    default: kanegate.config.json
+  max-iterations:
+    description: Agent attempts for `run`
+    default: ''
+  agent:
+    description: Agent preset override (opencode | claude | codex | gemini)
+    default: ''
+  kane-username:
+    description: TestMu AI username (use a secret)
+    required: true
+  kane-access-key:
+    description: TestMu AI access key (use a secret)
+    required: true
+outputs:
+  exit-code:
+    description: 0 green/deployed, 1 blocked, 2 gate error
+    value: ${{ steps.gate.outputs.exit-code }}
+runs:
+  using: composite
+  steps:
+    - name: Install Kane CLI
+      shell: bash
+      run: npm install -g @testmuai/kane-cli
+    - name: kanegate ${{ inputs.command }}
+      id: gate
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        KANE_USERNAME: ${{ inputs.kane-username }}
+        KANE_ACCESS_KEY: ${{ inputs.kane-access-key }}
+        NO_COLOR: '1'
+      run: |
+        set +e
+        args=("${{ inputs.command }}" --config "${{ inputs.config }}")
+        [ -n "${{ inputs.max-iterations }}" ] && args+=(--max-iterations "${{ inputs.max-iterations }}")
+        [ -n "${{ inputs.agent }}" ] && args+=(--agent "${{ inputs.agent }}")
+        node "$GITHUB_ACTION_PATH/bin/kanegate.js" "${args[@]}"
+        code=$?
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        latest=$(ls -td .kanegate/runs/*/ 2>/dev/null | head -1)
+        [ -n "$latest" ] && cat "$latest/REPORT.md" >> "$GITHUB_STEP_SUMMARY"
+        exit $code
+    - name: Upload Kane evidence + agent transcripts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: kanegate-run
+        path: ${{ inputs.working-directory }}/.kanegate/runs/
+        if-no-files-found: ignore
