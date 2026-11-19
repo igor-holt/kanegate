@@ -1,0 +1,56 @@
+
+kanegate · 2 flow(s) · up to 4 attempt(s) · agent: opencode · kane-cli 0.10.6
+run dir: .kanegate/runs/2026-11-19_14-25-14
+
+▶ Attempt 1/4 — starting app at http://localhost:4173
+  kane coupon-total — Set the Widget quantity to 2 and the Gadget quantity to 1. Type SAVE10 into the Coupon code field and click A…
+    · navigate: Navigate to http://localhost:4173
+    · wait: queued plan (4 steps): type "Widget quantity"; type "Gadget quantity"; type "Cou
+    · type: Type "2" into "Widget quantity"
+    · type: Type "1" into "Gadget quantity"
+    · 
+    · type: Typing SAVE10 into the Coupon code field
+    · click: Clicking Apply button
+    ✗ wait: Waiting after applying the coupon
+  FAIL coupon-total — Required quantities and SAVE10 yield displayed Order total $45.00, not the required $49.50. (53.7s, 22.37 credits)
+       kane: The run typed SAVE10 but did not perform the required Apply action before checking the order total.
+  kane single-item-checkout — Set the Widget quantity to 1 and leave the Gadget quantity at 0. Type buyer@example.com into the Email field …
+    · navigate: Navigate to http://localhost:4173
+    · type: Setting the Widget quantity to 1
+    · type: Typing buyer@example.com into the Email field
+    · click: Clicking Place order button below the Email field
+    ✗ wait: Waiting after placing the order
+  FAIL single-item-checkout — Order submission shows “Your cart is empty” despite Widget quantity 1, so no confirmation message can be verified. (45.9s, 22.14 credits)
+       kane: Placing an order rejects the cart as empty even though it contains one Widget.
+
+⛔ Deploy blocked: 2 flow(s) failed.
+  agent opencode ← Kane failure report (8214 chars) .kanegate/runs/2026-11-19_14-25-14/attempt-1/agent-prompt.md
+  agent exit 0 in 78s · changed: examples/checkout/public/cart.js
+
+▶ Attempt 2/4 — starting app at http://localhost:4173
+  kane coupon-total — Set the Widget quantity to 2 and the Gadget quantity to 1. Type SAVE10 into the Coupon code field and click A…
+    · navigate: Navigate to http://localhost:4173
+    · wait: queued plan (2 steps): type "Widget quantity"; type "Gadget quantity"
+    · type: Type "2" into "Widget quantity"
+    · type: Type "1" into "Gadget quantity"
+    · type: Typing SAVE10 into the Coupon code field
+    · click: Clicking Apply button next to Coupon code field in Products region
+    · analyze: the Order total shows $49.50
+    · assert: the Order total shows $49.50
+  PASS coupon-total — Objective completed (45s, 11.56 credits)
+  kane single-item-checkout — Set the Widget quantity to 1 and leave the Gadget quantity at 0. Type buyer@example.com into the Email field …
+    · navigate: Navigate to http://localhost:4173
+    · type: Typing Widget quantity in the Products region
+    · type: Typing buyer@example.com into the Email field
+    · click: Clicking Place order button
+    · analyze: a message containing 'Order confirmed' is shown
+    · assert: a message containing 'Order confirmed' is shown
+  PASS single-item-checkout — Objective completed (38.3s, 5.14 credits)
+
+✔ Kane signed off on all 2 flow(s).
+
+🚀 Deploying: node scripts/deploy.js
+  │ published 5 files to dist/ (run 2026-11-19_14-25-14)
+✔ Deployed.
+
+report: .kanegate/runs/2026-11-19_14-25-14/REPORT.md

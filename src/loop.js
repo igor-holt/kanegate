@@ -44,7 +44,8 @@ export async function gate(cfg, opts = {}) {
         const r = await runFlow(cfg, flow, itDir, { quiet: opts.quiet });
         it.results.push(r);
         const tag = r.status === 'passed' ? color.green('PASS') : r.status === 'failed' ? color.red('FAIL') : color.yellow('ERROR');
-        log(`  ${tag} ${flow.name}${r.reason ? color.dim(' — ' + clip(r.reason, 200)) : ''}${r.duration != null ? color.dim(` (${r.duration}s)`) : ''}`);
+        log(`  ${tag} ${flow.name}${r.reason ? color.dim(' — ' + clip(r.reason, 200)) : ''}${r.duration != null ? color.dim(` (${r.duration}s${r.credits != null ? `, ${r.credits} credits` : ''})`) : ''}`);
+        if (r.status === 'failed' && r.oneLiner) log(color.dim(`       kane: ${clip(r.oneLiner, 220)}`));
         if (r.status === 'error') break;
       }
     } finally { await stopApp(app); }

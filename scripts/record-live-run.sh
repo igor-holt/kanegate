@@ -13,11 +13,12 @@ run=$(ls -td examples/checkout/.kanegate/runs/*/ | head -1)
 out=docs/recorded-runs/kane-live
 rm -rf "$out" && mkdir -p "$out"
 cp "$run/REPORT.md" "$out/"
-sed "s#$PWD/##g" /tmp/kanegate-live.log > "$out/terminal.log"
+sed -e "s#$PWD/##g" -e "s#$HOME#~#g" /tmp/kanegate-live.log > "$out/terminal.log"
 for d in "$run"/attempt-*; do
   a=$(basename "$d"); mkdir -p "$out/$a"
-  cp "$d"/*.ndjson "$d"/*.png "$d"/agent-prompt.md "$d"/agent.diff "$out/$a/" 2>/dev/null || true
+  cp "$d"/*.ndjson "$d"/*.png "$d"/*.jpg "$d"/agent-prompt.md "$d"/agent.diff "$out/$a/" 2>/dev/null || true
 done
+find "$out" -name "*.ndjson" -exec sed -i "s#$HOME#~#g" {} +
 # Evidence packs can be large; keep them out of git unless you mean to commit them.
 echo "kanegate exit $code. Recorded to $out (review for anything private before committing)."
 (cd examples/checkout && node scripts/reset-demo.js)

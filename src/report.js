@@ -6,11 +6,11 @@ export function writeReport(runDir, summary) {
   const L = [];
   const verdict = summary.deployed ? '✅ DEPLOYED — Kane signed off' : summary.outcome === 'error' ? '⚠️ GATE ERROR — Kane could not run' : summary.outcome === 'dry-run' ? '✅ GREEN — deploy skipped (--dry-run / check)' : '⛔ DEPLOY BLOCKED — Kane did not sign off';
   L.push(`# kanegate run ${summary.runId}`, '', `**${verdict}**`, '');
-  L.push(`- App: ${summary.appUrl}`, `- Agent: ${summary.agent}`, `- Kane CLI: ${summary.kaneVersion || 'unknown'}`, `- Attempts: ${summary.iterations.length} / ${summary.maxIterations}`, `- Started: ${summary.startedAt}`, `- Finished: ${summary.finishedAt}`, '');
+  L.push(`- App: ${summary.appUrl}`, `- Agent: ${summary.agent}`, `- Kane CLI: ${summary.kaneVersion || 'unknown'}`, `- Attempts: ${summary.iterations.length} / ${summary.maxIterations}`, `- Kane credits reported: ${creditsTotal(summary)}`, `- Started: ${summary.startedAt}`, `- Finished: ${summary.finishedAt}`, '');
   for (const it of summary.iterations) {
-    L.push(`## Attempt ${it.iteration}`, '', '| Flow | Kane verdict | Reason | Steps | Duration |', '|---|---|---|---|---|');
+    L.push(`## Attempt ${it.iteration}`, '', '| Flow | Kane verdict | Reason | Steps | Duration | Credits |', '|---|---|---|---|---|---|');
     for (const r of it.results) {
-      L.push(`| ${r.flow} | ${r.status === 'passed' ? '✅ passed' : r.status === 'failed' ? '❌ failed' : '⚠️ error'} | ${(r.reason || r.summary || '').replace(/\|/g, '\\|').replace(/\n/g, ' ').slice(0, 200)} | ${r.steps?.length ?? 0} | ${r.duration != null ? r.duration + 's' : ''} |`);
+      L.push(`| ${r.flow} | ${r.status === 'passed' ? '✅ passed' : r.status === 'failed' ? '❌ failed' : '⚠️ error'} | ${(r.reason || r.summary || '').replace(/\|/g, '\\|').replace(/\n/g, ' ').slice(0, 200)} | ${r.steps?.length ?? 0} | ${r.duration != null ? r.duration + 's' : ''} | ${r.credits ?? ''} |`);
     }
     for (const r of it.results) if (r.testUrl) L.push(`- ${r.flow}: [Kane test link](${r.testUrl})`);
     if (it.agent) {
@@ -21,4 +21,10 @@ export function writeReport(runDir, summary) {
   }
   if (summary.deploy) L.push('## Deploy', '', `\`${summary.deploy.command}\` → exit ${summary.deploy.exitCode}`, '', '```', (summary.deploy.output || '').trim().slice(-1500), '```');
   fs.writeFileSync(path.join(runDir, 'REPORT.md'), L.join('\n') + '\n');
+}
+
+function creditsTotal(summary) {
+  let t = 0, any = false;
+  for (const it of summary.iterations) for (const r of it.results) if (r.credits != null) { t += r.credits; any = true; }
+  return any ? Math.round(t * 100) / 100 : 'n/a';
 }

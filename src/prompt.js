@@ -20,7 +20,16 @@ export function buildFixPrompt(cfg, failures, { iteration, maxIterations, histor
     L.push('> ' + f.objective.replace(/\n/g, '\n> '));
     L.push('');
     if (f.reason) L.push(`**Kane's failure reason:** ${f.reason}`);
+    if (f.oneLiner) L.push(`**Kane's one-liner:** ${f.oneLiner}`);
     if (f.summary) L.push(`**Kane's summary:** ${f.summary}`);
+    if (f.verdict) {
+      const v = f.verdict;
+      L.push('', `**Kane's failure triage:** ${[v.family, v.category, v.severity].filter(Boolean).join(' / ')}${v.confidence != null ? ` (confidence ${v.confidence})` : ''}`);
+      if (v.bug_title) L.push(`- Bug title: ${v.bug_title}`);
+      if (v.root_cause) L.push(`- Root cause (Kane's view): ${v.root_cause}`);
+      if (v.suggestion) L.push(`- Kane's suggestion: ${v.suggestion}`);
+      if (v.family === 'automation_bug') L.push('- Note: Kane suspects the *test* rather than the product. The flow objectives are fixed requirements, so make the app satisfy them; do not edit the flows.');
+    }
     if (f.finalState && Object.keys(f.finalState).length) L.push('**Values Kane extracted:** `' + JSON.stringify(f.finalState) + '`');
     if (f.steps?.length) {
       L.push('', '**Steps Kane took:**');

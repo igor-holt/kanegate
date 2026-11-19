@@ -29,10 +29,10 @@ export async function readEvidence(packPath, outDir, flowName) {
     out.consoleErrors = out.consoleErrors.slice(0, 15);
     // Screenshot of the first failing step, else the last step.
     const failedDir = out.stepFailures[0]?.entry.replace(/failure\.yaml$/, '');
-    const shots = entries.filter((x) => /\/steps\/[^/]+\/screenshot\.png$/.test(x)).sort();
+    const shots = entries.filter((x) => /\/steps\/[^/]+\/screenshot\.(png|jpe?g)$/.test(x)).sort();
     const shot = (failedDir && shots.find((s) => s.startsWith(failedDir))) || shots[shots.length - 1];
     if (shot) {
-      const png = path.join(outDir, `${flowName}.failure.png`);
+      const png = path.join(outDir, `${flowName}.failure${path.extname(shot)}`);
       const r = await run('sh', ['-c', 'unzip -p "$1" "$2" > "$3"', 'sh', dest, shot, png]);
       if (r.code === 0) out.screenshot = png;
     }

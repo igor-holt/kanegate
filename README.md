@@ -115,14 +115,14 @@ The action writes `REPORT.md` to the job summary and uploads the Kane NDJSON, ev
 
 1. kanegate runs `kane-cli run "<objective>" --agent --headless --url <app> --max-steps N --timeout S` for each flow.
 2. It reads the NDJSON stream: step lines (`{"step":n,"status":…,"remark":…}`) and `run_end` (`status`, `reason`, `summary`, `final_state`, `test_url`). It also checks the exit code (0 pass, 1 fail, 2 error, 3 timeout).
-3. It finds the sealed **evidence pack**, either from the `kane-cli evidence serve <pack>` hint or from `~/.testmuai/kaneai/sessions/<session_id>/evidence/`. From the pack it pulls `failure.yaml`, per-step failure records, console errors and the failing step's `screenshot.png`.
+3. It finds the sealed **evidence pack** (from the `coverage` event's `pack`, the `kane-cli evidence serve <pack>` hint, or `~/.testmuai/kaneai/sessions/<session_id>/evidence/`). It also keeps Kane's failure triage from `run_end.verdict` (bug title, root cause, suggestion, and whether Kane suspects the product or the test) and `credits_consumed`. From the pack it pulls `failure.yaml`, per-step failure records, console errors and the failing step's screenshot.
 4. It builds `agent-prompt.md`: the objective, Kane's reason, the step trail, the values Kane extracted, the evidence excerpts, the screenshot path, earlier attempts and the rule "change the product, not the test". The agent runs headless (`opencode run …`).
 5. It reverts any edits to protected files, records the agent's diff, restarts the app and goes back to step 1.
 
 ## Recorded runs (fallback for judges)
 
 - `docs/recorded-runs/offline-rehearsal/`: the loop with the **real OpenCode agent** fixing both seeded bugs in one attempt. Kane was replaced by a **test double** (`test/fake-kane.js`) there, as that README states up front.
-- `docs/recorded-runs/kane-live/`: the same demo against **real Kane CLI**, produced by `scripts/record-live-run.sh`. The demo video shows this run.
+- `docs/recorded-runs/kane-live/`: the same demo against **real Kane CLI**, produced by `scripts/record-live-run.sh`. Kane failed both flows on the seeded bugs ("Order total $45.00, not the required $49.50"; "shows 'Your cart is empty' despite Widget quantity 1"). OpenCode fixed `public/cart.js` from Kane's report, Kane passed both flows on attempt 2, and the deploy ran. It has Kane's raw NDJSON, screenshots, the prompt and the diff.
 
 ## Development
 
